@@ -1,0 +1,83 @@
+<link rel="import" href="../elements/imports.html">
+
+<dom-module id="polymer2-app">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <firebase-app id="app" auth-domain="thinnydev.firebaseapp.com" database-url="https://thinnydev.firebaseio.com"
+                      api-key="AIzaSyCwtXyjKMB1wWpL0OLSxgq-D9448XRm_Os">
+        </firebase-app>
+
+        <firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError">
+        </firebase-auth>
+
+        <firebase-query id="doc" path="/tb_videoAll" data="{{videos}}">
+        </firebase-query>
+
+        <h2>Polymer2 Polymerfire & paper-datatable</h2>
+
+        <paper-datatable id="datatable" data="{{videos}}"
+                         selectable
+                         response-width="767px"
+                         on-row-tap="show_video_dateils"
+                         >
+            <paper-datatable-column header="ID" property="v_id" type="String" sortable dialog
+                                    editable></paper-datatable-column>
+            <paper-datatable-column header="Name" property="v_name" type="String" sortable></paper-datatable-column>
+            <paper-datatable-column header="Desc" property="v_description" type="String"
+                                    sortable></paper-datatable-column>
+            <paper-datatable-column header="Photo" property="v_photo" type="String" sortable></paper-datatable-column>
+        </paper-datatable>
+
+    </template>
+
+    <script>
+        class Polymer2App extends Polymer.Element {
+            static get is() {
+                return 'polymer2-app';
+            }
+
+            static get properties() {
+                return {
+                    prop1: {
+                        type: String,
+                        value: 'polymer2-app'
+                    },
+                    videos: {
+                        type: Array
+                    }
+                };
+            }
+
+            json(data) {
+                return JSON.stringify(data);
+            }
+
+            ready() {
+                super.ready();
+                this.$.datatable.addEventListener('selected-item-changed', function(evt){
+                    console.log('selected-item-changed: ', evt);
+                });
+
+            }
+
+            handleError(e) {
+                console.log('auth error ', e)
+            }
+
+            show_video_dateils(el, evt) {
+                console.log('row-tab ', evt);
+                var evtData$ = {
+                    item: evt.item,
+                    key: evt.key
+                }
+                console.log(evtData$);
+            }
+        }
+
+        window.customElements.define(Polymer2App.is, Polymer2App);
+    </script>
+</dom-module>
